@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definición de la entidad Employee
+model Employee {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  position     String
+  createdAt    DateTime  @default(now())
+  
+  // Agrega este campo para establecer la relación inversa
+  leaveRequests LeaveRequest[]
+}
+
+// Definición de la entidad LeaveRequest
+model LeaveRequest {
+  id          Int       @id @default(autoincrement())
+  employeeId  Int
+  reason      String
+  status      String
+  createdAt   DateTime  @default(now())
+
+  // Relación con la entidad Employee
+  employee    Employee  @relation(fields: [employeeId], references: [id])
+}
+
+// Definición de la entidad Resource
+model Resource {
+  id             Int      @id @default(autoincrement())
+  title          String   @unique
+  description    String?
+  lastSee        String
+}
